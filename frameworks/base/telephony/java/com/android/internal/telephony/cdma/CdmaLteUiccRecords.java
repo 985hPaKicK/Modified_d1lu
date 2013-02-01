@@ -351,6 +351,12 @@ public final class CdmaLteUiccRecords extends SIMRecords {
             // check country code from SIM
             String imsi = getIMSI();
             String country = null;
+
+//cm10 f160
+	    if (Integer.parseInt(imsi.substring(0,3)) == 450 ) {
+	    	prefLang = "ko";
+	    }
+
             if (imsi != null) {
                 country = MccTable.countryCodeForMcc(
                                     Integer.parseInt(imsi.substring(0,3)));

@@ -42,6 +42,8 @@ import com.android.internal.telephony.Phone;
 import com.android.internal.telephony.PhoneBase;
 import com.android.internal.telephony.SmsMessageBase;
 import com.android.internal.telephony.IccRefreshResponse;
+//cm10 f160
+import com.android.internal.telephony.SimRegionCache;
 
 import java.util.ArrayList;
 
@@ -553,6 +555,9 @@ public class SIMRecords extends IccRecords {
                 }
 
                 log("IMSI: " + /* imsi.substring(0, 6) +*/ "xxxxxxx");
+
+//cm10 f160
+		SimRegionCache.setRegion(imsi);
 
                 if (((mncLength == UNKNOWN) || (mncLength == 2)) &&
                         ((imsi != null) && (imsi.length() >= 6))) {

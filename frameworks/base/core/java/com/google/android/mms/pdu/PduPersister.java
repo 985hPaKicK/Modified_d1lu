@@ -433,8 +433,16 @@ public class PduPersister {
                     if (ContentType.TEXT_PLAIN.equals(type) || ContentType.APP_SMIL.equals(type)
                             || ContentType.TEXT_HTML.equals(type)) {
                         String text = c.getString(PART_COLUMN_TEXT);
-                        byte [] blob = new EncodedStringValue(text != null ? text : "")
-                            .getTextString();
+//cm10 f160
+/*                        byte [] blob = new EncodedStringValue(text != null ? text : "")
+                            .getTextString();*/
+                        byte [] blob;
+                        try {
+                            blob = (text != null ? text : "").getBytes(CharacterSets.getMimeName(charset));
+                        } catch (Exception e) {
+                            Log.w(TAG, "Failed to decode an MMS text.", e);
+                            blob = new byte[0];
+                        }
                         baos.write(blob, 0, blob.length);
                     } else {
 
@@ -781,12 +789,18 @@ public class PduPersister {
 
         try {
             byte[] data = part.getData();
+//cm10 f160
+	    if (data == null) {
+	        data = new byte[0];
+	    }
+
             if (ContentType.TEXT_PLAIN.equals(contentType)
                     || ContentType.APP_SMIL.equals(contentType)
                     || ContentType.TEXT_HTML.equals(contentType)) {
                 ContentValues cv = new ContentValues();
-                cv.put(Telephony.Mms.Part.TEXT, new EncodedStringValue(data).getString());
-                if (mContentResolver.update(uri, cv, null, null) != 1) {
+//cm10 f160
+//                cv.put(Telephony.Mms.Part.TEXT, new EncodedStringValue(data).getString());
+                cv.put(Telephony.Mms.Part.TEXT, new EncodedStringValue(part.getCharset(), data).getString());                if (mContentResolver.update(uri, cv, null, null) != 1) {
                     throw new MmsException("unable to update " + uri.toString());
                 }
             } else {
